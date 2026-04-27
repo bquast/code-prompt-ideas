@@ -1,4 +1,4 @@
-// app.js
+// app.js - CodeBench with Smart Live Execution
 let currentBattle = null;
 
 async function loadBattle() {
@@ -19,21 +19,21 @@ async function loadBattle() {
             <div class="option" id="opt1">
                 <div class="option-label">OPTION A</div>
                 <pre><code>${escapeHtml(currentBattle.codeA)}</code></pre>
-                <div class="output" id="output1">Running code...</div>
+                <div class="output" id="output1">Testing code...</div>
                 <div class="model-name">${currentBattle.modelA}</div>
             </div>
             
             <div class="option" id="opt2">
                 <div class="option-label">OPTION B</div>
                 <pre><code>${escapeHtml(currentBattle.codeB)}</code></pre>
-                <div class="output" id="output2">Running code...</div>
+                <div class="output" id="output2">Testing code...</div>
                 <div class="model-name">${currentBattle.modelB}</div>
             </div>
         `;
 
-        // Run both codes
-        runCode(currentBattle.codeA, 'output1');
-        runCode(currentBattle.codeB, 'output2');
+        // Run smart tests
+        runCodeSmart(currentBattle.codeA, 'output1');
+        runCodeSmart(currentBattle.codeB, 'output2');
 
     } catch (e) {
         console.error(e);
@@ -47,31 +47,45 @@ function escapeHtml(unsafe) {
     return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// Safe JS execution with console capture
-function runCode(code, outputId) {
+// Improved: Try to detect and test the function automatically
+function runCodeSmart(code, outputId) {
     const outputEl = document.getElementById(outputId);
     let logs = [];
 
-    const originalConsoleLog = console.log;
+    const originalLog = console.log;
     console.log = (...args) => {
-        logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' '));
+        logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' '));
     };
 
     try {
-        // Execute the code
-        const result = new Function(code)();
-        
-        if (result !== undefined) {
-            logs.push(`→ Return value: ${typeof result === 'object' ? JSON.stringify(result, null, 2) : result}`);
-        }
+        // Create a safe execution context
+        const func = new Function(`
+            let output = [];
+            const console = { log: (...args) => output.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')) };
+            
+            ${code}
+            
+            // Try to auto-test common patterns
+            try {
+                if (typeof reverseStr === 'function') {
+                    output.push("Test: reverseStr('hello') → " + reverseStr('hello'));
+                    output.push("Test: reverseStr('CodeBench') → " + reverseStr('CodeBench'));
+                }
+                if (typeof reverse === 'function') {
+                    output.push("Test: reverse('test') → " + reverse('test'));
+                }
+            } catch(e) {}
+            
+            return output.join('\\n');
+        `)();
 
-        outputEl.textContent = logs.length ? logs.join('\n') : '(No output or console.log)';
+        outputEl.textContent = func || logs.join('\n') || "(No output detected)";
         
     } catch (err) {
-        outputEl.textContent = `Error: ${err.message}`;
+        outputEl.textContent = `Execution error: ${err.message}`;
         outputEl.style.color = '#ff6666';
     } finally {
-        console.log = originalConsoleLog;
+        console.log = originalLog;
     }
 }
 
@@ -101,7 +115,7 @@ async function vote(side) {
     btn.textContent = '✓ Thank you!';
     btn.style.background = '#00cc77';
 
-    setTimeout(() => loadBattle(), 1400);
+    setTimeout(loadBattle, 1400);
 }
 
 function skip() {
