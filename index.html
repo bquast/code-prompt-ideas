@@ -25,45 +25,52 @@
         }
         
         header {
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             border-bottom: 1px solid #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 1.1rem;
         }
         
         .logo {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 600;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
         }
         
         .main {
-            max-width: 1400px;
+            max-width: 1480px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem 2rem;
         }
         
         .prompt {
             background: var(--card);
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.5rem 2rem;
             margin-bottom: 2rem;
             border: 1px solid #333;
         }
         
         .prompt-label {
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+        
+        #prompt-text {
+            font-size: 1.25rem;
+            margin: 0;
+            line-height: 1.4;
         }
         
         .code-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 1.8rem;
         }
         
         .option {
@@ -73,16 +80,12 @@
             border: 3px solid transparent;
             transition: all 0.2s;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
-        .option:hover {
-            border-color: #444;
-        }
-        
-        .option.selected {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(0, 255, 157, 0.2);
-        }
+        .option:hover { border-color: #444; }
+        .option.selected { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0,255,157,0.2); }
         
         .option-label {
             position: absolute;
@@ -97,15 +100,14 @@
         
         pre {
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             background: #111;
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 8px;
             overflow-x: auto;
-            max-height: 320px;
+            max-height: 260px;
             margin: 0 0 1rem 0;
-            white-space: pre;
-            tab-size: 2;
+            flex: 1;
         }
         
         .output {
@@ -113,12 +115,14 @@
             border: 1px solid #333;
             padding: 1rem;
             border-radius: 8px;
-            min-height: 130px;
+            min-height: 110px;
+            max-height: 160px;
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.9rem;
             white-space: pre-wrap;
             color: #0f0;
             overflow-y: auto;
+            flex-shrink: 0;
         }
         
         .model-name {
@@ -133,28 +137,28 @@
             opacity: 0.7;
         }
         
-        .actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 3rem;
+        /* Vote buttons under each column */
+        .vote-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.8rem;
+            margin-top: 1.5rem;
         }
         
-        button {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
+        .vote-col {
+            text-align: center;
+        }
+        
+        .vote-btn {
+            padding: 0.9rem 2rem;
+            font-size: 1.05rem;
             font-weight: 600;
             border-radius: 9999px;
             cursor: pointer;
             transition: all 0.2s;
             border: none;
-        }
-        
-        .vote-btn {
-            background: var(--accent);
-            color: #000;
-            flex: 1;
-            max-width: 300px;
+            width: 100%;
+            max-width: 260px;
         }
         
         .vote-btn:hover {
@@ -163,16 +167,19 @@
         }
         
         .skip-btn {
+            padding: 0.9rem 2rem;
             background: transparent;
             color: var(--fg);
             border: 2px solid #444;
+            border-radius: 9999px;
+            cursor: pointer;
         }
         
         .footer {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: 2.5rem 1rem 1.5rem;
             opacity: 0.6;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -180,7 +187,7 @@
     <header>
         <div class="logo">CodeBench</div>
         <div>
-            <a href="/leaderboard" class="leaderboard-link" style="color: var(--accent); text-decoration: none;">Leaderboard →</a>
+            <a href="/leaderboard" style="color: var(--accent); text-decoration: none; font-weight: 500;">Leaderboard →</a>
         </div>
     </header>
 
@@ -190,13 +197,23 @@
             <h2 id="prompt-text">Loading next prompt...</h2>
         </div>
 
-        <div class="code-container" id="code-container">
-            <!-- Populated by JS -->
+        <div class="code-container" id="code-container"></div>
+
+        <!-- Vote buttons under each column -->
+        <div class="vote-row">
+            <div class="vote-col">
+                <button onclick="vote(1)" class="vote-btn" id="vote1" style="background: var(--accent); color: #000;">
+                    Vote A (Better)
+                </button>
+            </div>
+            <div class="vote-col">
+                <button onclick="vote(2)" class="vote-btn" id="vote2" style="background: var(--accent); color: #000;">
+                    Vote B (Better)
+                </button>
+            </div>
         </div>
 
-        <div class="actions">
-            <button onclick="vote(1)" class="vote-btn" id="vote1">Vote A (Better)</button>
-            <button onclick="vote(2)" class="vote-btn" id="vote2">Vote B (Better)</button>
+        <div style="text-align: center; margin-top: 1rem;">
             <button onclick="skip()" class="skip-btn">Skip</button>
         </div>
     </div>
