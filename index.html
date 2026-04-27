@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeBench • JS Prompt Arena</title>
-    <link rel="stylesheet" href="style.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
         
         :root {
             --bg: #0a0a0a;
@@ -73,7 +72,6 @@
             padding: 1.5rem;
             border: 3px solid transparent;
             transition: all 0.2s;
-            cursor: pointer;
             position: relative;
         }
         
@@ -104,17 +102,35 @@
             padding: 1.5rem;
             border-radius: 8px;
             overflow-x: auto;
-            max-height: 420px;
-            margin: 0;
+            max-height: 320px;
+            margin: 0 0 1rem 0;
             white-space: pre;
             tab-size: 2;
+        }
+        
+        .output {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 1rem;
+            border-radius: 8px;
+            min-height: 130px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            color: #0f0;
+            overflow-y: auto;
         }
         
         .model-name {
             margin-top: 1rem;
             font-size: 0.9rem;
-            opacity: 0.7;
+            opacity: 0;
             text-align: center;
+            transition: opacity 0.4s;
+        }
+        
+        .revealed .model-name {
+            opacity: 0.7;
         }
         
         .actions {
@@ -152,21 +168,11 @@
             border: 2px solid #444;
         }
         
-        .leaderboard-link {
-            color: var(--accent);
-            text-decoration: none;
-        }
-        
         .footer {
             text-align: center;
             padding: 3rem 1rem;
             opacity: 0.6;
             font-size: 0.9rem;
-        }
-        
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
         }
     </style>
 </head>
@@ -174,13 +180,13 @@
     <header>
         <div class="logo">CodeBench</div>
         <div>
-            <a href="/leaderboard" class="leaderboard-link">Leaderboard →</a>
+            <a href="/leaderboard" class="leaderboard-link" style="color: var(--accent); text-decoration: none;">Leaderboard →</a>
         </div>
     </header>
 
     <div class="main">
         <div class="prompt">
-            <div class="prompt-label">Prompt</div>
+            <div class="prompt-label">PROMPT</div>
             <h2 id="prompt-text">Loading next prompt...</h2>
         </div>
 
@@ -196,8 +202,7 @@
     </div>
 
     <div class="footer">
-        Built on Cloudflare Pages • Data stored in D1 • Vanilla JS only
-        <br>
+        Built on Cloudflare Pages • Data stored in D1 • Vanilla JS only<br>
         Your votes help build a public dataset of human preferences for code generation.
     </div>
 
