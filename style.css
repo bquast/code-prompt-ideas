@@ -1,0 +1,4 @@
+/* Additional styles if needed beyond the <style> block */
+body { overflow-x: hidden; }
+pre::-webkit-scrollbar { height: 6px; }
+pre::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
