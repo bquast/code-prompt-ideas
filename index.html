@@ -33,7 +33,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1rem;
         }
         
         .logo {
@@ -58,8 +57,16 @@
             background: white;
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.75rem 2rem;
             margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .prompt-content {
+            flex: 1;
         }
         
         .prompt-label {
@@ -78,6 +85,17 @@
             margin: 0;
             font-family: 'General Sans', sans-serif;
             letter-spacing: -0.02em;
+        }
+        
+        .skip-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .skip-text:hover {
+            color: var(--text);
         }
         
         .code-container {
@@ -105,12 +123,6 @@
             font-weight: 500;
         }
         
-        .done {
-            color: #10B981;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        
         pre {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
@@ -132,15 +144,25 @@
             overflow-y: auto;
         }
         
+        .model-name {
+            padding: 1rem 1.25rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.4s;
+            border-top: 1px solid var(--border);
+        }
+        
+        .revealed .model-name {
+            opacity: 1;
+        }
+        
         .vote-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
             margin-top: 2rem;
-        }
-        
-        .vote-col {
-            text-align: center;
         }
         
         .vote-btn {
@@ -154,12 +176,7 @@
             transition: all 0.2s;
         }
         
-        .vote-a {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .vote-b {
+        .vote-a, .vote-b {
             background: var(--primary);
             color: white;
         }
@@ -167,16 +184,6 @@
         .vote-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-        }
-        
-        .skip-btn {
-            padding: 1rem 2rem;
-            background: white;
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
         }
         
         .footer {
@@ -195,23 +202,22 @@
 
     <div class="main">
         <div class="prompt-card">
-            <div class="prompt-label">PROMPT</div>
-            <h1 id="prompt-text">Loading next prompt...</h1>
+            <div class="prompt-content">
+                <div class="prompt-label">PROMPT</div>
+                <h1 id="prompt-text">Loading next prompt...</h1>
+            </div>
+            <div onclick="skip()" class="skip-text">Skip →</div>
         </div>
 
         <div class="code-container" id="code-container"></div>
 
         <div class="vote-row">
-            <div class="vote-col">
+            <div>
                 <button onclick="vote(1)" class="vote-btn vote-a" id="vote1">Vote A</button>
             </div>
-            <div class="vote-col">
+            <div>
                 <button onclick="vote(2)" class="vote-btn vote-b" id="vote2">Vote B</button>
             </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 1.5rem;">
-            <button onclick="skip()" class="skip-btn">Skip</button>
         </div>
     </div>
 
