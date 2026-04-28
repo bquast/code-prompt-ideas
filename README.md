@@ -3,7 +3,7 @@
 **Human preference dataset for code generation**
 
 [Live Site → https://codepromptideas.com](https://codepromptideas.com)  
-[Backup → https://codepromptideas.pages.dev](https://codepromptideas.pages.dev)
+[Backup → https://code-prompt-ideas.pages.dev](https://codepromptideas.pages.dev)
 
 ---
 
