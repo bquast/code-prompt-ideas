@@ -1,4 +1,3 @@
-// app.js
 let currentBattle = null;
 
 async function loadBattle() {
